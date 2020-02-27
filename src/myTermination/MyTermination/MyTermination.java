@@ -16,10 +16,10 @@ public final class MyTermination extends org.scribble.runtime.session.Session {
 	public static final I1 I1 = myTermination.MyTermination.roles.I1.I1;
 	public static final M M = myTermination.MyTermination.roles.M.M;
 	public static final T T = myTermination.MyTermination.roles.T.T;
-	public static final go go = myTermination.MyTermination.ops.go.go;
 	public static final result result = myTermination.MyTermination.ops.result.result;
 	public static final shutdownRequest shutdownRequest = myTermination.MyTermination.ops.shutdownRequest.shutdownRequest;
 	public static final isShutdownRequested isShutdownRequested = myTermination.MyTermination.ops.isShutdownRequested.isShutdownRequested;
+	public static final start start = myTermination.MyTermination.ops.start.start;
 	public static final False False = myTermination.MyTermination.ops.False.False;
 	public static final True True = myTermination.MyTermination.ops.True.True;
 	public static final List<Role> ROLES = Collections.unmodifiableList(Arrays.asList(new Role[] {I2, I1, M, T}));

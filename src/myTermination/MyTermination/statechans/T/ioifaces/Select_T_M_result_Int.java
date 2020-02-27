@@ -11,7 +11,7 @@ public interface Select_T_M_result_Int<__Succ1 extends Succ_Out_M_result_Int> ex
 		return (Select_T_M_result_Int<?>) this;
 	}
 
-	default MyTermination_T_3 to(MyTermination_T_3 cast) {
-		return (MyTermination_T_3) this;
+	default MyTermination_T_4 to(MyTermination_T_4 cast) {
+		return (MyTermination_T_4) this;
 	}
 }

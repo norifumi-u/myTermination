@@ -4,24 +4,18 @@ data <java> "java.lang.Integer" from "rt.jar" as Int;
 
 global protocol MyTermination(role M, role I1, role I2, role T) {
 
-       rec a {
-         choice at M {
-	       go() from M to I1;
-	       continue a;
-	     } or {
-	       shutdownRequest() from M to I1;
-	     }
-       }
+       start() from M to T;
+       shutdownRequest() from M to I1;
 
        rec t {
          isShutdownRequested() from T to I2;
          choice at I2 {
            False() from I2 to T;
-	       continue t;
+	   continue t;
          } or {
            True() from I2 to T;
          }
        }
 
-		result(Int) from T to M;
+       result(Int) from T to M;
 }

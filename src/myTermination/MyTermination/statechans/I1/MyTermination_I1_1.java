@@ -1,11 +1,11 @@
 package myTermination.MyTermination.statechans.I1;
 
-import java.io.IOException;
 import myTermination.MyTermination.*;
 import myTermination.MyTermination.roles.*;
+import myTermination.MyTermination.ops.*;
 import myTermination.MyTermination.statechans.I1.ioifaces.*;
 
-public final class MyTermination_I1_1 extends org.scribble.runtime.statechans.BranchSocket<MyTermination, I1> implements Branch_I1_M_go__M_shutdownRequest<MyTermination_I1_1, EndSocket> {
+public final class MyTermination_I1_1 extends org.scribble.runtime.statechans.ReceiveSocket<MyTermination, I1> implements Receive_I1_M_shutdownRequest<EndSocket> {
 	public static final MyTermination_I1_1 cast = null;
 
 	protected MyTermination_I1_1(org.scribble.runtime.session.SessionEndpoint<MyTermination, I1> se, boolean dummy) {
@@ -17,55 +17,24 @@ public final class MyTermination_I1_1 extends org.scribble.runtime.statechans.Br
 		se.init();
 	}
 
-	@Override
-	public MyTermination_I1_1_Cases branch(M role) throws org.scribble.main.ScribRuntimeException, IOException, ClassNotFoundException {
-		org.scribble.runtime.message.ScribMessage m = super.readScribMessage(MyTermination.M);
-		Branch_I1_M_go__M_shutdownRequest_Enum openum;
-		if (m.op.equals(MyTermination.go)) {
-			openum = Branch_I1_M_go__M_shutdownRequest_Enum.go;
-		}
-		else if (m.op.equals(MyTermination.shutdownRequest)) {
-			openum = Branch_I1_M_go__M_shutdownRequest_Enum.shutdownRequest;
-		}
-		else {
-			throw new RuntimeException("Won't get here: " + m.op);
-		}
-		return new MyTermination_I1_1_Cases(this.se, true, openum, m);
+	public myTermination.MyTermination.statechans.I1.EndSocket receive(M role, shutdownRequest op) throws org.scribble.main.ScribRuntimeException, java.io.IOException, ClassNotFoundException {
+		super.readScribMessage(MyTermination.M);
+		this.se.setCompleted();
+		return new EndSocket(this.se, true);
 	}
 
-	public void branch(M role, MyTermination_I1_1_Handler handler) throws org.scribble.main.ScribRuntimeException, IOException, ClassNotFoundException {
-		branch(role, (Handle_I1_M_go__M_shutdownRequest<MyTermination_I1_1, EndSocket>) handler);
+	public myTermination.MyTermination.statechans.I1.EndSocket async(M role, shutdownRequest op, org.scribble.runtime.util.Buf<MyTermination_I1_1_Future> arg) throws org.scribble.main.ScribRuntimeException {
+		arg.val = new MyTermination_I1_1_Future(super.getFuture(MyTermination.M));
+		this.se.setCompleted();
+		return new EndSocket(this.se, true);
 	}
 
-	@Override
-	public void branch(M role, Handle_I1_M_go__M_shutdownRequest<MyTermination_I1_1, EndSocket> handler) throws org.scribble.main.ScribRuntimeException, IOException, ClassNotFoundException {
-		org.scribble.runtime.message.ScribMessage m = super.readScribMessage(MyTermination.M);
-		if (m.op.equals(MyTermination.go)) {
-			handler.receive(new MyTermination_I1_1(this.se, true), MyTermination.go);
-		}
-		else
-		if (m.op.equals(MyTermination.shutdownRequest)) {
-			this.se.setCompleted();
-			handler.receive(new EndSocket(this.se, true), MyTermination.shutdownRequest);
-		}
-		else {
-			throw new RuntimeException("Won't get here: " + m.op);
-		}
+	public boolean isDone() {
+		return super.isDone(MyTermination.M);
 	}
 
-	@Override
-	public void handle(M role, Handle_I1_M_go__M_shutdownRequest<Succ_In_M_go, Succ_In_M_shutdownRequest> handler) throws org.scribble.main.ScribRuntimeException, IOException, ClassNotFoundException {
-		org.scribble.runtime.message.ScribMessage m = super.readScribMessage(MyTermination.M);
-		if (m.op.equals(MyTermination.go)) {
-			handler.receive(new MyTermination_I1_1(this.se, true), MyTermination.go);
-		}
-		else
-		if (m.op.equals(MyTermination.shutdownRequest)) {
-			this.se.setCompleted();
-			handler.receive(new EndSocket(this.se, true), MyTermination.shutdownRequest);
-		}
-		else {
-			throw new RuntimeException("Won't get here: " + m.op);
-		}
+	@SuppressWarnings("unchecked")
+	public myTermination.MyTermination.statechans.I1.EndSocket async(M role, shutdownRequest op) throws org.scribble.main.ScribRuntimeException {
+		return async(MyTermination.M, op, (org.scribble.runtime.util.Buf<MyTermination_I1_1_Future>) this.se.gc);
 	}
 }

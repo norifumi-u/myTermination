@@ -14,7 +14,7 @@ public interface Receive_M_T_result_Int<__Succ1 extends Succ_In_T_result_Int> ex
 		return (Receive_M_T_result_Int<?>) this;
 	}
 
-	default MyTermination_M_2 to(MyTermination_M_2 cast) {
-		return (MyTermination_M_2) this;
+	default MyTermination_M_3 to(MyTermination_M_3 cast) {
+		return (MyTermination_M_3) this;
 	}
 }

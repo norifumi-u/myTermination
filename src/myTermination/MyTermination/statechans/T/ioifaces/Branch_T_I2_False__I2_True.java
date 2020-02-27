@@ -17,8 +17,8 @@ public interface Branch_T_I2_False__I2_True<__Succ1 extends Succ_In_I2_False, __
 		return (Branch_T_I2_False__I2_True<?, ?>) this;
 	}
 
-	default MyTermination_T_2 to(MyTermination_T_2 cast) {
-		return (MyTermination_T_2) this;
+	default MyTermination_T_3 to(MyTermination_T_3 cast) {
+		return (MyTermination_T_3) this;
 	}
 
 public enum Branch_T_I2_False__I2_True_Enum implements org.scribble.runtime.session.OpEnum {

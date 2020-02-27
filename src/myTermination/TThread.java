@@ -12,7 +12,8 @@ import myTermination.MyTermination.MyTermination;
 import myTermination.MyTermination.roles.T;
 import myTermination.MyTermination.statechans.T.MyTermination_T_1;
 import myTermination.MyTermination.statechans.T.MyTermination_T_2;
-import myTermination.MyTermination.statechans.T.MyTermination_T_2_Cases;
+import myTermination.MyTermination.statechans.T.MyTermination_T_3;
+import myTermination.MyTermination.statechans.T.MyTermination_T_3_Cases;
 
 public class TThread {
 
@@ -31,22 +32,25 @@ public class TThread {
 		int y = 1;
 		int z = 0;
 
+		MyTermination_T_2 t2 = t1.receive(M, start);
+
 		Exit:
 		while (true) {
-			MyTermination_T_2 t2 = t1.send(I2, isShutdownRequested);
+			MyTermination_T_3 t3 = t2.send(I2, isShutdownRequested);
 			System.out.println("T: isShutdownRequested sent");
 
-			MyTermination_T_2_Cases cases = t2.branch(I2);
+			MyTermination_T_3_Cases cases = t3.branch(I2);
 			switch (cases.op) {
 			case False:
 				System.out.println("T: false");
-				t1 = cases.receive(I2, False);
+				t2 = cases.receive(I2, False);
 				z = x + y;
 				x = y;
 				y = z;
-				System.out.println(z);
+				System.out.println("fib = " + z);
 				break;
 			case True:
+				System.out.println("T: true");
 				cases.receive(I2, True).send(M, result, z);
 				System.out.println("終了しました。");
 				break Exit;

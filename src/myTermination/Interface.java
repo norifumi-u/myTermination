@@ -15,15 +15,11 @@ import myTermination.MyTermination.MyTermination;
 import myTermination.MyTermination.roles.I1;
 import myTermination.MyTermination.roles.I2;
 import myTermination.MyTermination.statechans.I1.MyTermination_I1_1;
-import myTermination.MyTermination.statechans.I1.MyTermination_I1_1_Cases;
+import myTermination.MyTermination.statechans.I1.MyTermination_I1_1_Future;
 import myTermination.MyTermination.statechans.I2.MyTermination_I2_1;
-import myTermination.MyTermination.statechans.I2.MyTermination_I2_1_Future;
-import myTermination.MyTermination.statechans.I2.MyTermination_I2_2;
 
 public class Interface {
-
 	public static void main(String[] args) throws Exception {
-
 
 		try (ScribServerSocket s1 = new SocketChannelServer(8888);
 				ScribServerSocket s2 = new SocketChannelServer(7777)) {
@@ -32,61 +28,45 @@ public class Interface {
 					MPSTEndpoint<MyTermination, I2> interface2 = new MPSTEndpoint<>(new MyTermination(), I2,
 							new ObjectStreamFormatter())) {
 
-				interface1.accept(s1, M);
+				interface1.accept(s1, M); // 接続を許可する
 				interface2.accept(s2, T);
 
-				MyTermination_I1_1 i = new MyTermination_I1_1(interface1);
-				MyTermination_I2_1 j = new MyTermination_I2_1(interface2);
+				var i = new MyTermination_I1_1(interface1); // 初期状態の生成
+				var j = new MyTermination_I2_1(interface2);
 
-				var buf = new Buf<MyTermination_I2_1_Future>();
-				MyTermination_I2_2 j2 = j.async(T, isShutdownRequested, buf);
-				//MyTermination_I2_2 j2 = j.receive(T, isShutdownRequested, __);
+				var buf = new Buf<MyTermination_I1_1_Future>();	// Futureクラスのバッファオブジェクトを生成
+				i.async(M, shutdownRequest, buf); // 非同期メソッドを用いて次の状態のオブジェクトを生成
+				runAsync(() -> buf.val.sync());
 
-				Exit:
 				while (true) {
-					System.out.println("Interface: step");
-					new Thread(new Runnable() { public void run() {
-							try {
-								buf.val.sync();
-							} catch(IOException e) {
-								e.printStackTrace();
-							}
-						}}).start();
-					if (buf.val.isDone()) { // isShutdownRequested が来てたら
-						System.out.println("Interface: isShutdownRequested received");
-						j = j2.send(T, False);
-						j2 = j.async(T, isShutdownRequested, buf);
-					}
-
-					MyTermination_I1_1_Cases cases = i.branch(M);
-					switch (cases.op) {
-					case go:
-						i = cases.receive(M, go);
+					var j2 = j.receive(T, isShutdownRequested); // choice at M に対応
+					if(buf.val.isDone()) {
+						j2.send(T, True);
 						break;
-					case shutdownRequest:
-						cases.receive(M, shutdownRequest);
-						break Exit;
+					} else {
+						j = j2.send(T, False);
 					}
 				}
+				System.out.println("Interface: True sent");
 
-				buf.val.sync();
-				j2.send(T, True);
-
-
-				//    			    if(i.receive(M, shutdownRequest) != null) {
-				//    			    	flag = true;
-				//    			    }
-
-//				if (flag) {
-//					j2.send(T, True);
-//					flag = false;
-//				} else {
-//					j = j2.send(T, False);
-//				}
 			} catch (ScribRuntimeException | IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 
 		}
+	}
+
+	public static interface RunnableWithIOException {
+		public void run() throws IOException;
+	}
+
+	public static void runAsync(RunnableWithIOException r) {
+		new Thread(() -> {
+			try {
+				r.run();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}).start();
 	}
 }
